@@ -16,12 +16,15 @@ import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
+import javax.jms.QueueSender;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.print.attribute.standard.DateTimeAtCompleted;
+
+import org.springframework.jndi.JndiAccessor;
 
 public class JMSTester implements javax.jms.MessageListener {
 	
@@ -157,7 +160,7 @@ public class JMSTester implements javax.jms.MessageListener {
 		
 		/*
 		invoke with:
-		java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/iib-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar activemq.testing.JMSTester ConnectionFactory dynamicQueues/TEST.MapMessage.IN.Q dynamicQueues/TEST.MapMessage.OUT.Q 1
+		java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.JMSTester ConnectionFactory dynamicQueues/TEST.MapMessage.IN.Q dynamicQueues/TEST.MapMessage.OUT.Q 1
 		*/
 		
 		String connFactoryName = null;
