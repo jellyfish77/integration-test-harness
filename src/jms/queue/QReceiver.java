@@ -7,7 +7,8 @@ import javax.naming.*;
 /*
 invoke with:
 java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QReceiver queueConnectionFactory jmsOUTQ
-java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QReceiver queueConnectionFactory mapMessageOUTQ 
+java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QReceiver queueConnectionFactory mapMessageOUTQ
+java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QReceiver queueConnectionFactory IIBCDCatalogOUTQ 
 */
 
 public class QReceiver {
@@ -68,7 +69,7 @@ public class QReceiver {
 			// Run until enter is pressed
 			BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 			System.out.println("QReceiver application started");
-			System.out.println("Press enter to quit application");
+			System.out.println("Press enter to quit application\n");
 			stdin.readLine();
 			lender.exit();
 		} catch (IOException ioe) {
