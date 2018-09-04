@@ -21,6 +21,7 @@ invoke with:
 java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QSender queueConnectionFactory jmsINQ TextMessage 1
 java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QSender queueConnectionFactory mapMessageINQ MapMessage 10
 java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QSender queueConnectionFactory IIBCDCatalogINQ TextMessage /home/otto/Documents/test-data/cd-catalog.xml 3
+java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QSender queueConnectionFactory IIBinvoiceINQ TextMessage /home/otto/Documents/test-data/invoice.xml 10
 */
 
 public class QSender {
@@ -39,7 +40,7 @@ public class QSender {
 			System.out.print("Creating Queue Connection Factory... ");
 			QueueConnectionFactory qFactory = (QueueConnectionFactory) ctx.lookup(queuecf);
 			System.out.println("[Created " + qFactory.toString() + " OK]");
-			System.out.print("Creating Queue Connection (i.e. the connection to JMS provider)... ");
+			System.out.print("Creating Queue Connection (to JMS provider)... ");
 			qConnect = qFactory.createQueueConnection();
 			System.out.println("[Created " + qConnect.toString() + " OK]");
 			System.out.print("Creating queue session...");

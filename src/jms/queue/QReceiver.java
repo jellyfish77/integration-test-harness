@@ -8,7 +8,8 @@ import javax.naming.*;
 invoke with:
 java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QReceiver queueConnectionFactory jmsOUTQ
 java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QReceiver queueConnectionFactory mapMessageOUTQ
-java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QReceiver queueConnectionFactory IIBCDCatalogOUTQ 
+java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QReceiver queueConnectionFactory IIBCDCatalogOUTQ
+java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QReceiver queueConnectionFactory IIBinvoiceOUTQ 
 */
 
 public class QReceiver {
