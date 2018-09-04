@@ -25,29 +25,23 @@ public class MsgListener implements MessageListener {
 
 			// automatically assigned headers
 			System.out.println("\nAUTOMATICALLY ASSIGNED HEADERS:\n");
-			System.out.println("\tJMSDestination: " + msg.getJMSDestination().toString());
-			System.out.println("\tJMSDeliveryMode: "
+			System.out.println("\tJMSDestination:                " + msg.getJMSDestination().toString());
+			System.out.println("\tJMSDeliveryMode:               "
 					+ (javax.jms.DeliveryMode.PERSISTENT == msg.getJMSDeliveryMode() ? "PERSISTANT" : "NONPERSISTANT"));
-			System.out.println("\tJMSMessageID: " + msg.getJMSMessageID());
-			System.out.println(
-					"\tJMSTimestamp: " + msg.getJMSTimestamp() + " (Current Time: " + System.currentTimeMillis() + ")");
+			System.out.println("\tJMSMessageID:                  " + msg.getJMSMessageID());
+			System.out.println("\tJMSTimestamp:                  " + msg.getJMSTimestamp() + " (Current Time: " + System.currentTimeMillis() + ")");
 			System.out.println("\tTransit Duration [calculated]: "
 					+ convertMillisToString((System.currentTimeMillis() - msg.getJMSTimestamp())) + " ("
 					+ (System.currentTimeMillis() - msg.getJMSTimestamp()) + "ms)");
-			// System.out.println("<currentTimeMillis: " + System.currentTimeMillis() +
-			// ">");
-			// System.out.println("Duration (ms): " + (System.currentTimeMillis() -
-			// msg.getJMSTimestamp()));
-			System.out.println("\tJMSExpiration: " + msg.getJMSExpiration());
-			System.out.println("\tJMSRedelivered: " + msg.getJMSRedelivered());
-			System.out.println("\tJMSPriority: " + msg.getJMSPriority());
+			System.out.println("\tJMSExpiration:                 " + msg.getJMSExpiration());
+			System.out.println("\tJMSRedelivered:                " + msg.getJMSRedelivered());
+			System.out.println("\tJMSPriority:                   " + msg.getJMSPriority());
 
 			// log developer assigned headers
 			System.out.println("\nDEVELOPER ASSIGNED HEADERS:\n");
-			System.out.println("\tJMSReplyTo: " + msg.getJMSReplyTo());
+			System.out.println("\tJMSReplyTo:       " + msg.getJMSReplyTo());
 			System.out.println("\tJMSCorrelationID: " + msg.getJMSCorrelationID());
-			System.out.println("\tJMSType: " + msg.getJMSType());
-			//System.out.println("---------------------------------");
+			System.out.println("\tJMSType:          " + msg.getJMSType());
 
 			if (msg instanceof TextMessage) {
 				System.out.println("\nMessage is instanceof TextMessage");
