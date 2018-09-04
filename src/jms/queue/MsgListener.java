@@ -23,7 +23,7 @@ public class MsgListener implements MessageListener {
 			System.out.println("\tMessage Class Name: " + msg.getClass().getName());
 
 			// automatically assigned headers
-			System.out.println("Automatically Assigned Headers\n------------------------------");
+			System.out.println("\nAUTOMATICALLY ASSIGNED HEADERS:\n");
 			System.out.println("\tJMSDestination: " + msg.getJMSDestination().toString());
 			System.out.println("\tJMSDeliveryMode: "
 					+ (javax.jms.DeliveryMode.PERSISTENT == msg.getJMSDeliveryMode() ? "PERSISTANT" : "NONPERSISTANT"));
@@ -42,24 +42,24 @@ public class MsgListener implements MessageListener {
 			System.out.println("\tJMSPriority: " + msg.getJMSPriority());
 
 			// log developer assigned headers
-			System.out.println("DEVELOPER ASSIGNED HEADERS:\n");
+			System.out.println("\nDEVELOPER ASSIGNED HEADERS:\n");
 			System.out.println("\tJMSReplyTo: " + msg.getJMSReplyTo());
 			System.out.println("\tJMSCorrelationID: " + msg.getJMSCorrelationID());
 			System.out.println("\tJMSType: " + msg.getJMSType());
 			//System.out.println("---------------------------------");
 
 			if (msg instanceof TextMessage) {
-				System.out.println("Message is instanceof TextMessage");
+				System.out.println("\nMessage is instanceof TextMessage");
 				TextMessage tmsg = (TextMessage) msg;
 				System.out.println("\nMESSAGE CONTENTS:\n");
 				System.out.println(tmsg.getText());
 				// return;
 			}
 			if (msg instanceof MapMessage) {
-				System.out.println("Message is instanceof MapMessage");
+				System.out.println("\nMessage is instanceof MapMessage");
 				MapMessage mmsg = (MapMessage) msg;
 				// log Properties
-				System.out.println("Message Properties\n-------------------------------");
+				System.out.println("\nMESSAGE PROPERTIES:\n");
 				Enumeration propertyNames = mmsg.getPropertyNames();
 				while (propertyNames.hasMoreElements()) {
 					String name = (String) propertyNames.nextElement();
@@ -72,8 +72,8 @@ public class MsgListener implements MessageListener {
 
 			}
 			if (msg instanceof BytesMessage) {
-				System.out.println("Message is instanceof BytesMessage");
-				System.out.println("Message contents\n-------------------------------");
+				System.out.println("\nMessage is instanceof BytesMessage");
+				System.out.println("\nMESSAGE CONTENTS:\n");
 				BytesMessage bmsg = (BytesMessage) msg;
 				String strMessage = null;
 				byte[] byteData = null;
