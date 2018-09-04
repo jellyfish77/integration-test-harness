@@ -16,10 +16,11 @@ public class MsgListener implements MessageListener {
 			// Get the data from the message
 			Message msg = (Message) message;
 			System.out.println("------------------------[MESSAGE RECEIVED]----------------------------");
+			
+			System.out.println("\nSYSTEM INFO:\n");
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
-			System.out.println("\tLocal Time:         " + dateFormat.format(date));
-			System.out.println("\tMessage Class:      " + msg.getClass());
+			System.out.println("\tLocal Time:         " + dateFormat.format(date));			
 			System.out.println("\tMessage Class Name: " + msg.getClass().getName());
 
 			// automatically assigned headers
