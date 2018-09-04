@@ -15,42 +15,43 @@ public class MsgListener implements MessageListener {
 		try {
 			// Get the data from the message
 			Message msg = (Message) message;
-			System.out.println("[MESSAGE RECEIVED]");
+			System.out.println("------------------------[MESSAGE RECEIVED]----------------------------");
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
-			System.out.println("Local Time: " + dateFormat.format(date));
-			System.out.println("Message Class: " + msg.getClass());
+			System.out.println("\tLocal Time:         " + dateFormat.format(date));
+			System.out.println("\tMessage Class:      " + msg.getClass());
+			System.out.println("\tMessage Class Name: " + msg.getClass().getName());
 
 			// automatically assigned headers
 			System.out.println("Automatically Assigned Headers\n------------------------------");
-			System.out.println("JMSDestination: " + msg.getJMSDestination().toString());
-			System.out.println("JMSDeliveryMode: "
+			System.out.println("\tJMSDestination: " + msg.getJMSDestination().toString());
+			System.out.println("\tJMSDeliveryMode: "
 					+ (javax.jms.DeliveryMode.PERSISTENT == msg.getJMSDeliveryMode() ? "PERSISTANT" : "NONPERSISTANT"));
-			System.out.println("JMSMessageID: " + msg.getJMSMessageID());
+			System.out.println("\tJMSMessageID: " + msg.getJMSMessageID());
 			System.out.println(
-					"JMSTimestamp: " + msg.getJMSTimestamp() + " (Current Time: " + System.currentTimeMillis() + ")");
-			System.out.println("Transit Duration [calculated]: "
+					"\tJMSTimestamp: " + msg.getJMSTimestamp() + " (Current Time: " + System.currentTimeMillis() + ")");
+			System.out.println("\tTransit Duration [calculated]: "
 					+ convertMillisToString((System.currentTimeMillis() - msg.getJMSTimestamp())) + " ("
 					+ (System.currentTimeMillis() - msg.getJMSTimestamp()) + "ms)");
 			// System.out.println("<currentTimeMillis: " + System.currentTimeMillis() +
 			// ">");
 			// System.out.println("Duration (ms): " + (System.currentTimeMillis() -
 			// msg.getJMSTimestamp()));
-			System.out.println("JMSExpiration: " + msg.getJMSExpiration());
-			System.out.println("JMSRedelivered: " + msg.getJMSRedelivered());
-			System.out.println("JMSPriority: " + msg.getJMSPriority());
+			System.out.println("\tJMSExpiration: " + msg.getJMSExpiration());
+			System.out.println("\tJMSRedelivered: " + msg.getJMSRedelivered());
+			System.out.println("\tJMSPriority: " + msg.getJMSPriority());
 
 			// log developer assigned headers
-			System.out.println("Developer Assigned Headers\n--------------------------");
-			System.out.println("JMSReplyTo: " + msg.getJMSReplyTo());
-			System.out.println("JMSCorrelationID: " + msg.getJMSCorrelationID());
-			System.out.println("JMSType: " + msg.getJMSType());
-			System.out.println("---------------------------------");
+			System.out.println("DEVELOPER ASSIGNED HEADERS:\n");
+			System.out.println("\tJMSReplyTo: " + msg.getJMSReplyTo());
+			System.out.println("\tJMSCorrelationID: " + msg.getJMSCorrelationID());
+			System.out.println("\tJMSType: " + msg.getJMSType());
+			//System.out.println("---------------------------------");
 
 			if (msg instanceof TextMessage) {
 				System.out.println("Message is instanceof TextMessage");
 				TextMessage tmsg = (TextMessage) msg;
-				System.out.println("Message contents\n-------------------------------");
+				System.out.println("\nMESSAGE CONTENTS:\n");
 				System.out.println(tmsg.getText());
 				// return;
 			}
@@ -81,8 +82,9 @@ public class MsgListener implements MessageListener {
 				strMessage = new String(byteData);
 				System.out.println(strMessage);
 
-			}
-			System.out.println("[END OF MESSAGE]\n");
+			}			
+			System.out.println("-------------------------[END OF MESSAGE]-----------------------------\n");
+			
 			// throw new IllegalStateException("Invalid message type");
 
 		} catch (JMSException jmse) {
