@@ -1,18 +1,14 @@
 package jms.queue;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.jms.*;
 import javax.naming.*;
 //import com.sun.jndi.url.iiopname.iiopnameURLContextFactory;
-
-import io.file.*;
+//import io.File;
 //import jdk.internal.org.objectweb.asm.tree.IntInsnNode;
 
 
@@ -27,7 +23,7 @@ java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-tes
 
 /*
 git:
-git commit -m 'move file reader method to static class in utils project' path/to/my/file.ext  
+git commit -m 'Move readFile method to utils project in io.File package' ./src/jms/queue/QSender.java  
 */
 
 public class QSender {
@@ -76,20 +72,6 @@ public class QSender {
 		System.exit(0);
 	}
 
-	/**
-	 * from:
-	 * https://stackoverflow.com/questions/326390/how-do-i-create-a-java-string-from-the-contents-of-a-file
-	 * 
-	 * @param path
-	 * @param encoding
-	 * @return
-	 * @throws IOException
-	 */
-	static String readFile(String path, Charset encoding) throws IOException {
-		byte[] encoded = Files.readAllBytes(Paths.get(path));
-		return new String(encoded, encoding);
-	}
-
 	public static void main(String argv[]) {
 		String queuecf = null;
 		String requestq = null;
@@ -122,7 +104,7 @@ public class QSender {
 				System.out.println("Local Time: " + dateFormat.format(date));
 
 				if (messageType.equals("TextMessage")) {										
-					java.io.File[] files = new File(msgsPath).listFiles();
+					java.io.File[] files = new java.io.File(msgsPath).listFiles();
 					//If this pathname does not denote a directory, then listFiles() returns null. 
 
 					for (java.io.File file : files) {
@@ -130,7 +112,8 @@ public class QSender {
 					        //results.add(file.getName());
 					    	TextMessage textMessage;
 							try {								
-								textMessage = qSender.qSession.createTextMessage(FileOperations.readFileContents(file.getAbsolutePath(), StandardCharsets.UTF_8));
+								//textMessage = qSender.qSession.createTextMessage(FileOperations.readFileContents(file.getAbsolutePath(), StandardCharsets.UTF_8));
+								textMessage = qSender.qSession.createTextMessage(io.File.readContents(file.getAbsolutePath(), StandardCharsets.UTF_8));
 								//textMessage.setJMSType(messageType);
 								textMessage.setJMSType(messageType); // why?
 								System.out.print("Created " + textMessage.getJMSType() + " for file \"" + file.getName() + "\", sending... ");
