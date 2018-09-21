@@ -8,13 +8,13 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.jms.*;
 import javax.naming.*;
+//import com.sun.jndi.url.iiopname.iiopnameURLContextFactory;
 
-import com.sun.jndi.url.iiopname.iiopnameURLContextFactory;
+import io.file.*;
+//import jdk.internal.org.objectweb.asm.tree.IntInsnNode;
 
-import jdk.internal.org.objectweb.asm.tree.IntInsnNode;
 
 /*
 invoke with:
@@ -22,6 +22,12 @@ java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-tes
 java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QSender queueConnectionFactory mapMessageINQ MapMessage 10
 java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QSender queueConnectionFactory IIBCDCatalogINQ TextMessage /home/otto/Documents/test-data/cd-catalog.xml 3
 java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QSender queueConnectionFactory IIBinvoiceINQ TextMessage /home/otto/Documents/test-data/invoice.xml 10
+java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/utils/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.QSender queueConnectionFactory IIBinvoiceINQ TextMessage /home/otto/Documents/test-data/invoice.xml 10
+*/
+
+/*
+git:
+git commit -m 'move file reader method to static class in utils project' path/to/my/file.ext  
 */
 
 public class QSender {
@@ -116,15 +122,15 @@ public class QSender {
 				System.out.println("Local Time: " + dateFormat.format(date));
 
 				if (messageType.equals("TextMessage")) {										
-					File[] files = new File(msgsPath).listFiles();
+					java.io.File[] files = new File(msgsPath).listFiles();
 					//If this pathname does not denote a directory, then listFiles() returns null. 
 
-					for (File file : files) {
+					for (java.io.File file : files) {
 					    if (file.isFile()) {
 					        //results.add(file.getName());
 					    	TextMessage textMessage;
-							try {
-								textMessage = qSender.qSession.createTextMessage(readFile(file.getAbsolutePath(), StandardCharsets.UTF_8));
+							try {								
+								textMessage = qSender.qSession.createTextMessage(FileOperations.readFileContents(file.getAbsolutePath(), StandardCharsets.UTF_8));
 								//textMessage.setJMSType(messageType);
 								textMessage.setJMSType(messageType); // why?
 								System.out.print("Created " + textMessage.getJMSType() + " for file \"" + file.getName() + "\", sending... ");
