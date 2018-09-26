@@ -21,7 +21,7 @@ import jms.queue.MsgListener;
 invoke with:
 java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/utils/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.loadtest.DynamicQReceiverLoadTest 10 queueConnectionFactory LoadTest.Q
 
-git commit /src/jms/queue/loadtest/DynamicQReceiverLoadTest.java -m 'message'
+git commit ./src/jms/queue/loadtest/DynamicQReceiverLoadTest.java -m 'message'
 */
 
 
@@ -30,8 +30,7 @@ public class DynamicQReceiverLoadTest implements Runnable {
 	private int threadID;
 	private QueueConnection qConnect = null;
 	private QueueSession qSession = null;
-	private Queue requestQ = null;
-	private String textMessage = null;
+	private Queue requestQ = null;	
 	
 	public DynamicQReceiverLoadTest(int threadID, String connFactory, String queueName) {	
 		this.threadID = threadID;		
@@ -81,7 +80,15 @@ public class DynamicQReceiverLoadTest implements Runnable {
 	
 	@Override
 	public void run() {
-		System.out.println("Started thread #" + threadID);		
+		
+		//do some work that responds to interruption
+		System.out.println("Started thread #" + threadID);
+			
+		if(Thread.currentThread().isInterrupted()) {
+	        //clean up
+			System.out.println("Interrupt detected on thread #" + threadID);
+	        return;	    
+	    }						
 	}
 
 	/* 
