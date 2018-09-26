@@ -21,7 +21,7 @@ import jms.queue.MsgListener;
 invoke with:
 java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/utils/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.loadtest.DynamicQReceiverLoadTest 10 queueConnectionFactory LoadTest.Q
 
-git commit /src/jms/queue/loadtest/DynamicQReceiverLoadTest.java -m 'create new class for receiving messages for activemq queue load testing'
+git commit /src/jms/queue/loadtest/DynamicQReceiverLoadTest.java -m 'message'
 */
 
 
@@ -36,6 +36,7 @@ public class DynamicQReceiverLoadTest implements Runnable {
 	public DynamicQReceiverLoadTest(int threadID, String connFactory, String queueName) {	
 		this.threadID = threadID;		
 		String dynQueueName = "dynamicQueues/" + queueName + "." + threadID;
+		//String dynQueueName = queueName + "." + threadID;
 		
 		try {
 			System.out.print("Creating Initial Context for JNDI... ");
@@ -50,14 +51,20 @@ public class DynamicQReceiverLoadTest implements Runnable {
 			System.out.print("Creating queue session...");
 			qSession = qConnect.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 			System.out.println("[Created " + qSession.toString() + " OK]");
-			// Lookup the request queue
-			requestQ = (Queue) ctx.lookup(dynQueueName);
+			
+			// Get queue object from provider
+			System.out.print("Creating queue \"" + dynQueueName + "\"... ");
+			requestQ = (Queue) qSession.createQueue(dynQueueName);
+			System.out.println("[OK]");
+			
 			// Now that setup is complete, start the Connection
 			System.out.print("Starting Queue Connection... ");
 			qConnect.start();
 			System.out.println("[Started " + qConnect.toString() + " OK]");			
 			// Create the message listener
 			QueueReceiver qReceiver = qSession.createReceiver(requestQ);
+			
+			
 			System.out.print("Starting message listener...");
 			qReceiver.setMessageListener(new MsgListener());
 			System.out.println("[OK]");
@@ -88,6 +95,7 @@ public class DynamicQReceiverLoadTest implements Runnable {
 	 */
 	private void exit(int exitCode) {
 		try {
+			System.out.println("System.exit("+exitCode+") called to init VM shutdown...");
 			qConnect.close();
 		} catch (JMSException jmse) {
 			jmse.printStackTrace();
@@ -109,6 +117,24 @@ public class DynamicQReceiverLoadTest implements Runnable {
 			System.out.println("Invalid argument(s).");
 			System.exit(0);
 		}
+		
+		// catch VM termination from user interrupt (ctrl+c) or system event
+		// from: https://stackoverflow.com/questions/1611931/catching-ctrlc-in-java
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+	        public void run() {
+	            try {
+	                Thread.sleep(200);
+	                System.out.println("Interrupt detected, shutting down VM.");
+	                
+	                //some cleaning up code...
+
+	            } catch (InterruptedException e) {
+	                // TODO Auto-generated catch block
+	                e.printStackTrace();
+	            }
+	        }
+	    });
+
 
 		for (int i = 0; i < numThreads; i++) {
 			Thread object = new Thread(new DynamicQReceiverLoadTest(i, connFactory, queueName));
