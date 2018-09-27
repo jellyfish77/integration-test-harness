@@ -77,7 +77,7 @@ public class DynamicQSenderLoadTest implements Runnable {
 		try {
 			QueueSender queueSender = qSession.createSender(requestQ);
 			TextMessage textMessage = qSession.createTextMessage(this.textMessage);
-			for (int i=0; i<=numMessages; i++) {
+			for (int i=0; i<numMessages; i++) {
 				queueSender.send(textMessage);
 			}
 		} catch (JMSException e) {
