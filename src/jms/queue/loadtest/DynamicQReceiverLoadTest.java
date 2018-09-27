@@ -2,6 +2,8 @@ package jms.queue.loadtest;
 
 import java.io.IOException;
 
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
@@ -16,6 +18,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import jms.queue.MsgListener;
+import jms.queue.QReceiver;
 
 /*
 invoke with:
@@ -28,6 +31,7 @@ git commit ./src/jms/queue/loadtest/DynamicQReceiverLoadTest.java -m 'message'
 public class DynamicQReceiverLoadTest implements Runnable {
 	
 	private int threadID;
+	private QueueConnectionFactory qFactory = null;
 	private QueueConnection qConnect = null;
 	private QueueSession qSession = null;
 	private Queue requestQ = null;	
@@ -42,10 +46,10 @@ public class DynamicQReceiverLoadTest implements Runnable {
 			Context ctx = new InitialContext();
 			System.out.println("[OK]");
 			System.out.print("Creating Queue Connection Factory... ");
-			QueueConnectionFactory qFactory = (QueueConnectionFactory) ctx.lookup(connFactory);
+			qFactory = (ActiveMQConnectionFactory) ctx.lookup(connFactory); // use ActiveMQ API instead ofJMS API
 			System.out.println("[Created " + qFactory.toString() + " OK]");
 			System.out.print("Creating Queue Connection (to JMS provider)... ");
-			qConnect = qFactory.createQueueConnection();
+			qConnect = (ActiveMQConnection) qFactory.createQueueConnection(); // use ActiveMQ API instead ofJMS API
 			System.out.println("[Created " + qConnect.toString() + " OK]");
 			System.out.print("Creating queue session...");
 			qSession = qConnect.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -59,15 +63,16 @@ public class DynamicQReceiverLoadTest implements Runnable {
 			// Now that setup is complete, start the Connection
 			System.out.print("Starting Queue Connection... ");
 			qConnect.start();
-			System.out.println("[Started " + qConnect.toString() + " OK]");			
-			// Create the message listener
+			System.out.println("[Started " + qConnect.toString() + " OK]");
+			
+			// create consumer for queue
 			QueueReceiver qReceiver = qSession.createReceiver(requestQ);
 			
-			
-			System.out.print("Starting message listener...");
-			qReceiver.setMessageListener(new MsgListener());
+			// set the message listener class for consumer
+			System.out.print("Starting message listener for messages on queue '" + requestQ.getQueueName() + "' [JNDI Name: " + dynQueueName + "]...");
+			qReceiver.setMessageListener(new MsgListener());			
 			System.out.println("[OK]");
-			System.out.println("Waiting for messages on queue '" + requestQ.getQueueName() + "' [JNDI Name: " + dynQueueName + "]...");
+			
 		} catch (JMSException jmse) {
 			jmse.printStackTrace();
 			exit(1);
@@ -79,14 +84,19 @@ public class DynamicQReceiverLoadTest implements Runnable {
 	}
 	
 	@Override
-	public void run() {
-		
+	public void run() {		
 		//do some work that responds to interruption
 		System.out.println("Started thread #" + threadID);
-			
+				
+		/*
+		while (more messages) {
+		 // receive message	
+		}
+		*/		
+		
 		if(Thread.currentThread().isInterrupted()) {
 	        //clean up
-			System.out.println("Interrupt detected on thread #" + threadID);
+			System.out.println("\nInterrupt detected on thread #" + threadID);
 	        return;	    
 	    }						
 	}
@@ -131,7 +141,7 @@ public class DynamicQReceiverLoadTest implements Runnable {
 	        public void run() {
 	            try {
 	                Thread.sleep(200);
-	                System.out.println("Interrupt detected, shutting down VM.");
+	                System.out.println("\nInterrupt detected, shutting down VM...");
 	                
 	                //some cleaning up code...
 
@@ -147,6 +157,8 @@ public class DynamicQReceiverLoadTest implements Runnable {
 			Thread object = new Thread(new DynamicQReceiverLoadTest(i, connFactory, queueName));
 			object.start();
 		}
+		
+		// loop to check if 
 	}
  
 }
