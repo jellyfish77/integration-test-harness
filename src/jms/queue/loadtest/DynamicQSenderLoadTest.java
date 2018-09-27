@@ -22,7 +22,7 @@ invoke with:
 java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/utils/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.loadtest.DynamicQSenderLoadTest 10 queueConnectionFactory LoadTest.Q /home/otto/Documents/test-data/invoice.xml 1000
 
 git:
-git commit -am 'create new class for receiving messages for activemq queue load testing' ./src/jms/queue/loadtest/DynamicQSenderLoadTest.java  
+git commit ./src/jms/queue/loadtest/DynamicQSenderLoadTest.java -m 'message'  
 */
 
 public class DynamicQSenderLoadTest implements Runnable {
@@ -53,11 +53,11 @@ public class DynamicQSenderLoadTest implements Runnable {
 			System.out.print("Creating queue session...");
 			qSession = qConnect.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 			System.out.println("[Created " + qSession.toString() + " OK]");
-			//System.out.print("Looking up queue \"" + queueName + "\" ...");
-			//requestQ = (Queue) ctx.lookup(queueName);
+
 			System.out.print("Creating queue \"" + dynQueueName + "\"... ");
 			requestQ = (Queue) qSession.createQueue(dynQueueName);
 			System.out.println("[OK]");
+
 			System.out.print("Starting Queue Connection... ");
 			qConnect.start();
 			System.out.println("[Started " + qConnect.toString() + " OK]");
@@ -131,7 +131,25 @@ public class DynamicQSenderLoadTest implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		// catch VM termination from user interrupt (ctrl+c) or system event
+		// from: https://stackoverflow.com/questions/1611931/catching-ctrlc-in-java
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+	        public void run() {
+	            try {
+	                Thread.sleep(200);
+	                System.out.println("\nInterrupt detected, shutting down VM...");
+	                
+	                //some cleaning up code...
 
+	            } catch (InterruptedException e) {
+	                // TODO Auto-generated catch block
+	                e.printStackTrace();
+	            }
+	        }
+	    });
+		
+		
 		for (int i = 0; i < numThreads; i++) {
 			Thread object = new Thread(new DynamicQSenderLoadTest(i, connFactory, queueName, textMessage, numMessages));
 			object.start();
