@@ -72,18 +72,23 @@ public class DynamicQSenderLoadTest implements Runnable {
 
 	@Override
 	public void run() {
-		System.out.println("Started thread #" + threadID);
+		System.out.println("Thread #" + threadID + ": Thread started [run() invoked]");
 				
 		try {
 			QueueSender queueSender = qSession.createSender(requestQ);
 			TextMessage textMessage = qSession.createTextMessage(this.textMessage);
 			for (int i=0; i<numMessages; i++) {
+				System.out.println("Thread #" + threadID + ": Sending message #" + (i+1));
 				queueSender.send(textMessage);
 			}
+			System.out.println("Thread #" + threadID + ": Finished sending messages");
 		} catch (JMSException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		System.out.println("Thread #" + threadID + ": Calling exit(0)...;");
+		this.exit(0);		
 	}
 	
 	/* 
@@ -126,7 +131,9 @@ public class DynamicQSenderLoadTest implements Runnable {
 		}
 
 		try {
+			System.out.print("Reading contents of file: " + msgFilePath + "... ");
 			textMessage = io.File.readContents(msgFilePath, java.nio.charset.StandardCharsets.UTF_8);
+			System.out.println("[OK]");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -153,6 +160,7 @@ public class DynamicQSenderLoadTest implements Runnable {
 		for (int i = 0; i < numThreads; i++) {
 			Thread object = new Thread(new DynamicQSenderLoadTest(i, connFactory, queueName, textMessage, numMessages));
 			object.start();
+			
 		}
 	}
 }
