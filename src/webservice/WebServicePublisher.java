@@ -1,4 +1,4 @@
-package webservices;
+package webservice;
 
 import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
@@ -7,15 +7,15 @@ import javax.jws.soap.SOAPBinding;
 import javax.xml.ws.Endpoint;
 
 
+//javax.jws.WebService annotation defining the class as a web service endpoint
 @WebService
+
 @SOAPBinding(style = SOAPBinding.Style.DOCUMENT)
 
 // Invocation commands:
 // java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin webservices.WebServicePublisher
 
-// test by visiting: http://localhost:8888/WebServicePublisher?wsdl
-
-
+// WSDL addr: http://localhost:8888/WebServicePublisher?wsdl
 
 @HandlerChain(file="handler-chain.xml")
 
@@ -40,12 +40,10 @@ public class WebServicePublisher {
 		System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
 		
 		System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
-									
 				
-		// Publish the endpoint
-		
+		// Publish the endpoint		
 		//String url = "http://localhost:8888/WebServicePublisher";
-		// With 0.0.0.0 you tell it to 'listen' to incoming connections to any ip-address (associated with your 
+		// With 0.0.0.0 will 'listen' to incoming connections to any ip-address (associated with your 
 		// computer).
 		String url = "http://0.0.0.0:8888/WebServicePublisher";
 		System.out.println("Service is published at: " + url);		 

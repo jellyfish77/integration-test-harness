@@ -4,5 +4,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="cfg"/>
 	<classpathentry kind="lib" path="/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/utils"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
