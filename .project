@@ -15,4 +15,10 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>LIB_HOME</name>
+			<value>$%7BLIB_HOME%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>

@@ -1,7 +1,9 @@
 package jms.queue.loadtest;
 
 import java.io.IOException;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
+
 
 import javax.jms.JMSException;
 import javax.jms.Queue;
@@ -18,11 +20,19 @@ import javax.naming.NamingException;
 import jms.queue.QSender;
 
 /*
-invoke with:
-java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/utils/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.loadtest.DynamicQSenderLoadTest 10 queueConnectionFactory LoadTest.Q /home/otto/Documents/test-data/invoice.xml 1000
 
-git:
-git commit ./src/jms/queue/loadtest/DynamicQSenderLoadTest.java -m 'message'  
+Libs:
+
+	activemq-all-5.15.0.jar
+
+Params:
+
+	<#threads> <connFactory> <queueName> <file path> <#messages>
+	
+	e.g.:
+
+ 	10 queueConnectionFactory LoadTest.Q /home/otto/Documents/test-data/invoice.xml 1000
+  
 */
 
 public class DynamicQSenderLoadTest implements Runnable {

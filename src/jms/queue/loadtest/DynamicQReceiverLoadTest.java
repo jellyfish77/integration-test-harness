@@ -21,10 +21,19 @@ import jms.queue.MsgListener;
 import jms.queue.QReceiver;
 
 /*
-invoke with:
-java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin:/home/otto/eclipse-workspace/utils/bin:/home/otto/eclipse-workspace/lib/activemq-all-5.15.0.jar jms.queue.loadtest.DynamicQReceiverLoadTest 10 queueConnectionFactory LoadTest.Q
 
-git commit ./src/jms/queue/loadtest/DynamicQReceiverLoadTest.java -m 'message'
+Libraries:
+
+	activemq-all-5.15.0.jar
+
+Parameters:
+
+	<#threads> <connFactory> <queueName>
+	
+	e.g.:
+	
+	10 queueConnectionFactory LoadTest.Q
+	
 */
 
 

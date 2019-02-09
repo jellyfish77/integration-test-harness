@@ -13,10 +13,6 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 /*
  * from: https://java.globinch.com/enterprise-java/web-services/jax-ws/logging-tracing-web-service-xml-request-response-jax-ws/
  * 
- * invoke with:
- * 
- * java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin webservices.WebServicePublisher
- * 
  */
 
 public class WebServiceLogHandler implements SOAPHandler<SOAPMessageContext> {

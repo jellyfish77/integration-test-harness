@@ -6,16 +6,17 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.ws.Endpoint;
 
+/*
+ * 
+ * 
+ */
 
 //javax.jws.WebService annotation defining the class as a web service endpoint
 @WebService
 
 @SOAPBinding(style = SOAPBinding.Style.DOCUMENT)
 
-// Invocation commands:
-// java -Dfile.ending=UTF-8 -classpath /home/otto/eclipse-workspace/integration-test-harness/bin webservices.WebServicePublisher
-
-// WSDL addr: http://localhost:8888/WebServicePublisher?wsdl
+// WSDL: http://localhost:8888/WebServicePublisher?wsdl
 
 @HandlerChain(file="handler-chain.xml")
 
@@ -47,7 +48,7 @@ public class WebServicePublisher {
 		// computer).
 		String url = "http://0.0.0.0:8888/WebServicePublisher";
 		System.out.println("Service is published at: " + url);		 
-		Endpoint.publish(url, new WebServicePublisher());	
+		Endpoint.publish(url, new WebServicePublisher());
 		
 	}
 	
