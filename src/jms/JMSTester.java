@@ -27,6 +27,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.print.attribute.standard.DateTimeAtCompleted;
 
+import org.apache.log4j.Logger;
 import org.springframework.jndi.JndiAccessor;
 
 /*
@@ -47,6 +48,7 @@ public class JMSTester implements javax.jms.MessageListener {
 	private Session session = null;
 	private Destination outDest = null;
 	private Destination inDest = null;
+	final static Logger logger = Logger.getLogger(JMSTester.class);
 
 	public JMSTester(Properties env, String connFactoryName, String inDestName, String outDestName) {
 		try {
@@ -60,37 +62,35 @@ public class JMSTester implements javax.jms.MessageListener {
 				ctx = new InitialContext(env);
 			}
 			ConnectionFactory factory = (ConnectionFactory) ctx.lookup(connFactoryName);
-			System.out.println("\nContext Details");
-			System.out.println("===============");
+			JMSTester.logger.info("Context Details...");			
 			Enumeration ctxEnvironnment = ctx.getEnvironment().elements();
 			// ctxEnvironnment.elements().
 			while (ctxEnvironnment.hasMoreElements()) {
 				//TypeKey entry = (TypeKey) ctxEnvironnment.nextElement();
 				//System.out.println(entry);
-				 System.out.println(Arrays.asList(ctxEnvironnment.nextElement()));				
+				JMSTester.logger.info(Arrays.asList(ctxEnvironnment.nextElement()));				
 			}
 /*
 			for (Map.Entry<KeyType, ValueType> entry : map.entrySet()) {
 				System.out.println(entry.getKey() + " : " + entry.getValue());
 			}
 */
-			System.out.print("Connecting to JMS Provider... ");
+			JMSTester.logger.info("Connecting to JMS Provider... ");
 			connection = factory.createConnection();
-			System.out.println("[OK]");
+			JMSTester.logger.info("Connected to JMS Provider Ok");
 			ConnectionMetaData connectionMetaData = connection.getMetaData();
-			System.out.println("JMSProviderName: " + connectionMetaData.getJMSProviderName());
-			System.out.println("JMSProviderVersion: " + connectionMetaData.getProviderVersion());
-			System.out.println("JMSVersion: " + connectionMetaData.getJMSVersion());
+			JMSTester.logger.info("JMSProviderName: " + connectionMetaData.getJMSProviderName());
+			JMSTester.logger.info("JMSProviderVersion: " + connectionMetaData.getProviderVersion());
+			JMSTester.logger.info("JMSVersion: " + connectionMetaData.getJMSVersion());
 			// Create the JMS Session
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			// Lookup the request and response queues
-			System.out.print("Looking up " + inDestName + "... ");
+			JMSTester.logger.info("Looking up inbound destination name: '" + inDestName + "'... ");
 			inDest = (Destination) ctx.lookup(inDestName);
-			System.out.println("[OK]");
-			System.out.print("Looking up " + outDestName + "... ");
+			JMSTester.logger.info("Look up inbound destination ok, retrieved destination: " + inDest.toString());			
+			JMSTester.logger.info("Looking up outbound destination name: '" + outDestName + "'... ");			
 			outDest = (Destination) ctx.lookup(outDestName);
-			System.out.println("[OK]");
-
+			JMSTester.logger.info("Look up outbound destination ok, retrieved destination: " + outDest.toString());			
 			MessageConsumer consumer = session.createConsumer(outDest);
 			// Register this class to be a JMS message listener object for the consumer
 			consumer.setMessageListener(this);
@@ -116,19 +116,20 @@ public class JMSTester implements javax.jms.MessageListener {
 		try {
 			MessageProducer producer = session.createProducer(inDest);
 			producer.send(msg);
-			System.out.println("[MESSAGE PRODUCED]");
-			System.out.println("Automatically Assigned Headers\n------------------------------");
-			System.out.println("JMSMessageID: " + msg.getJMSMessageID());
+			JMSTester.logger.info("[MESSAGE SENT]");
+			JMSTester.logger.info("Automatically Assigned Headers...");
+			JMSTester.logger.info("JMSMessageID: " + msg.getJMSMessageID());
 			// log Application Specific Properties
-			System.out.println("Application Specific Properties\n-------------------------------");
+			JMSTester.logger.info("Application Specific Properties...");
 			Enumeration propertyNames = msg.getPropertyNames();
 			while (propertyNames.hasMoreElements()) {
 				String name = (String) propertyNames.nextElement();
 				Object value = msg.getObjectProperty(name);
-				System.out.println(name + " = " + value);
+				JMSTester.logger.info(name + " = " + value);
 			}
 		} catch (JMSException jmse) {
-			jmse.printStackTrace();
+			JMSTester.logger.error("Error sending MapMessage!", jmse);
+			//jmse.printStackTrace();
 			System.exit(1);
 		}
 	}
@@ -139,39 +140,39 @@ public class JMSTester implements javax.jms.MessageListener {
 
 		try {
 			// automatically assigned headers
-			System.out.println("[MESSAGE RECEIVED]");
-			System.out.println("Automatically Assigned Headers\n------------------------------");
-			System.out.println("JMSDestination: " + message.getJMSDestination().toString());
-			System.out.println("JMSDeliveryMode: "
+			JMSTester.logger.info("[MESSAGE RECEIVED]");
+			JMSTester.logger.info("Automatically Assigned Headers...");
+			JMSTester.logger.info("JMSDestination: " + message.getJMSDestination().toString());
+			JMSTester.logger.info("JMSDeliveryMode: "
 					+ (javax.jms.DeliveryMode.PERSISTENT == message.getJMSDeliveryMode() ? "PERSISTANT"
 							: "NONPERSISTANT"));
-			System.out.println("JMSMessageID: " + message.getJMSMessageID());
-			System.out.println("JMSTimestamp: " + message.getJMSTimestamp() + " ("
+			JMSTester.logger.info("JMSMessageID: " + message.getJMSMessageID());
+			JMSTester.logger.info("JMSTimestamp: " + message.getJMSTimestamp() + " ("
 					+ (System.currentTimeMillis() - message.getJMSTimestamp()) + "ms)");
-			// System.out.println("<currentTimeMillis: " + System.currentTimeMillis() +
+			// JMSTester.logger.info("<currentTimeMillis: " + System.currentTimeMillis() +
 			// ">");
-			// System.out.println("Duration (ms): " + (System.currentTimeMillis() -
+			// JMSTester.logger.info("Duration (ms): " + (System.currentTimeMillis() -
 			// message.getJMSTimestamp()));
-			System.out.println("JMSExpiration: " + message.getJMSExpiration());
-			System.out.println("JMSRedelivered: " + message.getJMSRedelivered());
-			System.out.println("JMSPriority: " + message.getJMSPriority());
+			JMSTester.logger.info("JMSExpiration: " + message.getJMSExpiration());
+			JMSTester.logger.info("JMSRedelivered: " + message.getJMSRedelivered());
+			JMSTester.logger.info("JMSPriority: " + message.getJMSPriority());
 
 			// log developer assigned headers
-			System.out.println("Developer Assigned Headers\n--------------------------");
-			System.out.println("JMSReplyTo: " + message.getJMSReplyTo());
-			System.out.println("JMSCorrelationID: " + message.getJMSCorrelationID());
-			System.out.println("JMSType: " + message.getJMSType());
+			JMSTester.logger.info("Developer Assigned Headers...");
+			JMSTester.logger.info("JMSReplyTo: " + message.getJMSReplyTo());
+			JMSTester.logger.info("JMSCorrelationID: " + message.getJMSCorrelationID());
+			JMSTester.logger.info("JMSType: " + message.getJMSType());
 
 			// log Properties
-			System.out.println("Properties\n-------------------------------");
+			JMSTester.logger.info("Properties...");
 			Enumeration propertyNames = message.getPropertyNames();
 			while (propertyNames.hasMoreElements()) {
 				String name = (String) propertyNames.nextElement();
 				Object value = message.getObjectProperty(name);
-				System.out.println(name + " = " + value);
+				JMSTester.logger.info(name + " = " + value);
 			}
 			// TextMessage textMessage = (TextMessage) message;
-			// System.out.println("Message Consumed: " + textMessage.getText());
+			// JMSTester.logger.info("Message Consumed: " + textMessage.getText());
 		} catch (JMSException jmse) {
 			jmse.printStackTrace();
 		}
@@ -187,7 +188,7 @@ public class JMSTester implements javax.jms.MessageListener {
 	}
 
 	public static void main(String argv[]) {
-
+		
 		String host = null;
 		String port = null;
 		String connFactoryName = null;
@@ -203,22 +204,21 @@ public class JMSTester implements javax.jms.MessageListener {
 			outDestName = argv[4];
 			numMessages = Integer.parseInt(argv[5]);
 		} else {
-			System.out.println("Invalid arguments.");
+			JMSTester.logger.info("Invalid arguments.");			
 			System.exit(0);
 		}
 
-		System.out.println("JMSTester Application Started");		
-		
-		System.out.println("\nProgram Arguments");
-		System.out.println("=================");
-		System.out.println("host: " + host);
-		System.out.println("port: " + port);
-		System.out.println("connFactoryName: " + connFactoryName);
-		System.out.println("inDestName: " + inDestName);
-		System.out.println("outDestName: " + outDestName);
-		System.out.println("numMessages: " + numMessages);
+		JMSTester.logger.info("================== JMSTester Application Started ==============================");
+		//JMSTester.logger.info("JMSTester Application Started");
+		JMSTester.logger.info("Program arguments...");		
+		JMSTester.logger.info("host: " + host);
+		JMSTester.logger.info("port: " + port);
+		JMSTester.logger.info("connFactoryName: " + connFactoryName);
+		JMSTester.logger.info("inDestName: " + inDestName);
+		JMSTester.logger.info("outDestName: " + outDestName);
+		JMSTester.logger.info("numMessages: " + numMessages);
 
-		// System.out.println("Press enter to quit application");
+		// JMSTester.logger.info("Press enter to quit application");
 
 		Properties env = new Properties();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
@@ -233,30 +233,32 @@ public class JMSTester implements javax.jms.MessageListener {
 //			UUID uuid = UUID.randomUUID();
 //			String textMessage = "Message " + (i + 1) + " [" + uuid.toString() + "]";
 //			jmsTester.sendTextMessage(textMessage);	
-//			System.out.println("Message Produced: " + textMessage);
+//			JMSTester.logger.info("Message Produced: " + textMessage);
 //		}
 
 		MapMessage mapMessage;
-		try {
-			mapMessage = jmsTester.session.createMapMessage();
-			mapMessage.setInt("Age", 88);
-			mapMessage.setFloat("Weight", 234);
-			mapMessage.setString("Name", "Smith");
-			mapMessage.setObject("Height", new Double(150.32));
-			mapMessage.setStringProperty("sender", "integration-test-harness");
-			mapMessage.setBooleanProperty("some_bool", true);
-			mapMessage.setStringProperty("JMSXAppID", "eclipse");
-			mapMessage.setStringProperty("JMSXGroupID", "ERF-001");
-			// jmsTester.session.createProducer(jmsTester.inDest).send(mapMessage);
-			mapMessage.setJMSReplyTo(jmsTester.outDest);
-			jmsTester.sendMessage(mapMessage);
-			// System.out.println("[MESSAGE PRODUCED] (JMSMessageID: " +
-			// mapMessage.getJMSMessageID() +")");
-		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		for (int i=0; i<numMessages; i++) {		
+			try {
+				JMSTester.logger.info("Building MapMessage " + i + " of " + numMessages);
+				mapMessage = jmsTester.session.createMapMessage();
+				mapMessage.setInt("Age", 88);
+				mapMessage.setFloat("Weight", 234);
+				mapMessage.setString("Name", "Smith");
+				mapMessage.setObject("Height", new Double(150.32));
+				mapMessage.setStringProperty("sender", "integration-test-harness");
+				mapMessage.setBooleanProperty("some_bool", true);
+				mapMessage.setStringProperty("JMSXAppID", "eclipse");
+				mapMessage.setStringProperty("JMSXGroupID", "ERF-001");
+				// jmsTester.session.createProducer(jmsTester.inDest).send(mapMessage);
+				mapMessage.setJMSReplyTo(jmsTester.outDest);
+				JMSTester.logger.info("Sending MapMessage...");
+				jmsTester.sendMessage(mapMessage);
+				//JMSTester.logger.info("[MESSAGE SENT] (JMSMessageID: " + mapMessage.getJMSMessageID() +")");
+			} catch (JMSException e) {
+				// TODO Auto-generated catch block
+				JMSTester.logger.error("Error sending MapMessage!", e);
+			}
 		}
-
 		/*
 		 * try { // Read all standard input and send it as a message BufferedReader
 		 * stdin = new BufferedReader(new InputStreamReader(System.in)); while (true) {
