@@ -6,9 +6,13 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.ws.Endpoint;
 
+import org.apache.log4j.Logger;
+
+import jms.JMSTester;
+
 /*
  * 
- * 
+ * WSDL: http://localhost:8888/WebServicePublisher?wsdl
  */
 
 //javax.jws.WebService annotation defining the class as a web service endpoint
@@ -16,18 +20,18 @@ import javax.xml.ws.Endpoint;
 
 @SOAPBinding(style = SOAPBinding.Style.DOCUMENT)
 
-// WSDL: http://localhost:8888/WebServicePublisher?wsdl
-
 @HandlerChain(file="handler-chain.xml")
 
 public class WebServicePublisher {
+	
+	final static Logger logger = Logger.getLogger(JMSTester.class);
 	
 	@WebMethod
 	public String sayHello(String msg){
 		return "Hello "+msg;
 	}
 	
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		// enable logging of all communication to the console
 		// https://stackoverflow.com/questions/1945618/tracing-xml-request-responses-with-jax-ws		
 
@@ -47,7 +51,7 @@ public class WebServicePublisher {
 		// With 0.0.0.0 will 'listen' to incoming connections to any ip-address (associated with your 
 		// computer).
 		String url = "http://0.0.0.0:8888/WebServicePublisher";
-		System.out.println("Service is published at: " + url);		 
+		WebServicePublisher.logger.info("Service is published at: " + url);		 
 		Endpoint.publish(url, new WebServicePublisher());
 		
 	}

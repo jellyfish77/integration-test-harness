@@ -5,7 +5,7 @@
      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <javaee:handler-chain>
     <javaee:handler>
-      <javaee:handler-class>webservices.WebServiceLogHandler</javaee:handler-class>
+      <javaee:handler-class>webservice.WebServiceLogHandler</javaee:handler-class>
     </javaee:handler>
   </javaee:handler-chain>
 </javaee:handler-chains>
