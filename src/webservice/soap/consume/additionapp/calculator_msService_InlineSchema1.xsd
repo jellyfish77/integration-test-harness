@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://tempuri.org/calculator_ms" xmlns="http://tempuri.org/calculator_ms" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:mrm="http://tempuri.org/calculator_ms" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://tempuri.org/calculator_ms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+                                                                                  <xsd:element name="intA" type="xsd:int"/>
+            <xsd:element name="intB" type="xsd:int"/>
+            <xsd:element name="addC" type="xsd:int"/>
+            <xsd:element name="fcode" type="xsd:string"/>
+            <xsd:element name="fmessage" type="xsd:string"/>
+            <xsd:complexType name="ReqAdd">
+        <xsd:sequence>
+          <xsd:element ref="intA"/>
+          <xsd:element ref="intB"/>
+        </xsd:sequence>
+      </xsd:complexType>
+            <xsd:complexType name="ResAdd">
+        <xsd:sequence>
+          <xsd:element ref="addC"/>
+        </xsd:sequence>
+      </xsd:complexType>
+            <xsd:complexType name="ErrMessage">
+        <xsd:sequence>
+          <xsd:element ref="fcode"/>
+          <xsd:element ref="fmessage"/>
+        </xsd:sequence>
+      </xsd:complexType>
+            <xsd:element ibmSchExtn:docRoot="true" name="ErrMessage" type="ErrMessage"/>
+            <xsd:element ibmSchExtn:docRoot="true" name="ResAdd" type="ResAdd"/>
+            <xsd:element ibmSchExtn:docRoot="true" name="ReqAdd" type="ReqAdd"/>
+        </xsd:schema>
